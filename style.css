@@ -12,10 +12,15 @@ main{max-width:1100px;margin:0 auto;padding:28px 20px}
 .section{display:block}
 .hidden{display:none}
 .section-title{margin:28px 0 16px;font-size:24px}
-.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;padding:24px;background:linear-gradient(180deg,rgba(108,140,255,.12),rgba(35,213,171,.08));border:1px solid rgba(255,255,255,.08);border-radius:16px}
-.hero-text h1{margin:0 0 8px;font-size:36px}
+.hero{display:flex;flex-direction:column;gap:16px;align-items:stretch;padding:24px;background:linear-gradient(180deg,rgba(108,140,255,.12),rgba(35,213,171,.08));border:1px solid rgba(255,255,255,.08);border-radius:16px}
+.hero-text{text-align:center}
+.hero-text h1{margin:0 0 8px;font-size:36px;font-weight:800;color:var(--text)}
 .hero-text p{margin:0 0 16px;color:var(--muted)}
-.hero-art{height:240px;border-radius:12px;background:radial-gradient(1200px 400px at 10% 20%, rgba(108,140,255,.25), transparent), radial-gradient(800px 300px at 80% 60%, rgba(35,213,171,.25), transparent), linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02))}
+.hero-art{position:relative;overflow:hidden;height:320px;border-radius:12px;background:none}
+.hero-art .slider{position:absolute;inset:0;display:grid;place-items:center}
+.hero-art .slider-track{display:flex;align-items:center;gap:16px;transform:translateX(-50%);animation:slideRight 24s linear infinite}
+.hero-art .slider-track img{height:200px;width:auto;border-radius:10px;opacity:.9;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+@keyframes slideRight{0%{transform:translateX(-50%)}100%{transform:translateX(0%)}}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
 .card img{width:100%;height:150px;object-fit:cover}
@@ -65,3 +70,9 @@ main{max-width:1100px;margin:0 auto;padding:28px 20px}
 .cal-cell.selected{outline:2px solid var(--primary)}
 @media (max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.services{grid-template-columns:repeat(2,1fr)}.booking-layout{grid-template-columns:1fr}}
 @media (max-width:600px){.cards{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.hero-art{height:180px}}
+
+.modal{position:fixed;inset:0;display:grid;place-items:center;z-index:100}
+.modal.hidden{display:none}
+.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
+.modal-content{position:relative;z-index:1;width:min(520px,92vw);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:20px}
+.modal-content h3{margin:0 0 12px}
