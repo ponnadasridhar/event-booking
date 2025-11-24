@@ -11,8 +11,15 @@ const dateInput=document.getElementById('date');
 const searchInput=document.getElementById('search');
 const tableBody=document.querySelector('#booking-table tbody');
 const offerButtons=[...document.querySelectorAll('[data-nav="booking"]')];
+const authModal=document.getElementById('admin-auth');
+const authForm=document.getElementById('auth-form');
+const authTitle=document.getElementById('auth-title');
+const authHelp=document.getElementById('auth-help');
+const authPassword=document.getElementById('auth-password');
+const authCancel=document.getElementById('auth-cancel');
+const logoutBtn=document.getElementById('logout');
 
-function navigateTo(id){sections.forEach(s=>s.classList.toggle('hidden',s.id!==id));navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+id));location.hash='#'+id}
+function navigateTo(id){if(id==='admin'&&!isAuthed()){showAuth();return}sections.forEach(s=>s.classList.toggle('hidden',s.id!==id));navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+id));location.hash='#'+id}
 
 navLinks.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();navigateTo(a.getAttribute('href').slice(1))}));
 offerButtons.forEach(b=>b.addEventListener('click',()=>navigateTo('booking')));
@@ -26,6 +33,12 @@ function ymd(d){const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(
 function loadBookings(){try{return JSON.parse(localStorage.getItem('bookings'))||[]}catch(e){return[]}}
 function saveBookings(list){localStorage.setItem('bookings',JSON.stringify(list))}
 function bookedDates(){return new Set(loadBookings().map(b=>b.date))}
+function isAuthed(){return localStorage.getItem('admin_session')==='true'}
+function hasAdminPassword(){return !!localStorage.getItem('admin_hash')}
+function setSession(v){localStorage.setItem('admin_session',v?'true':'false')}
+function hideAuth(){authModal.classList.add('hidden');authHelp.textContent='';authHelp.className='message';authPassword.value=''}
+function showAuth(){authModal.classList.remove('hidden');authTitle.textContent=hasAdminPassword()?'Admin Login':'Set Admin Password';authHelp.textContent=hasAdminPassword()?'Enter your admin password to continue.':'Create an admin password.';authHelp.className='message'}
+async function sha256(str){const enc=new TextEncoder().encode(str);const buf=await crypto.subtle.digest('SHA-256',enc);return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}
 
 function initDateInput(){const min=today();const max=addDays(min,60);dateInput.min=ymd(min);dateInput.max=ymd(max)}
 
@@ -71,3 +84,6 @@ function cryptoRandom(){const s=window.crypto&&crypto.getRandomValues?crypto.get
 function init(){const hash=location.hash.replace('#','')||'home';initDateInput();renderCalendar();renderTable('');navigateTo(hash)}
 
 document.addEventListener('DOMContentLoaded',init)
+authForm.addEventListener('submit',async e=>{e.preventDefault();authHelp.textContent='';authHelp.className='message';const pwd=authPassword.value.trim();if(!pwd){authHelp.textContent='Enter password';authHelp.className='message err';return}if(!hasAdminPassword()){const h=await sha256(pwd);localStorage.setItem('admin_hash',h);setSession(true);hideAuth();navigateTo('admin');return}const h=await sha256(pwd);if(h===localStorage.getItem('admin_hash')){setSession(true);hideAuth();navigateTo('admin')}else{authHelp.textContent='Incorrect password';authHelp.className='message err'}})
+authCancel.addEventListener('click',()=>{hideAuth();navigateTo('home')})
+logoutBtn.addEventListener('click',()=>{setSession(false);navigateTo('home')})
