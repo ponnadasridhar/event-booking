@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header class="site-header">
@@ -23,18 +23,29 @@
 <main>
 <section id="home" class="section">
 <div class="hero">
+<div class="hero-art">
+<div class="slider">
+<div class="slider-track">
+<img src="assets/wedding.svg" alt="Wedding">
+<img src="assets/birthday.svg" alt="Birthday">
+<img src="assets/corporate.svg" alt="Corporate Gala">
+<img src="assets/wedding.svg" alt="Wedding">
+<img src="assets/birthday.svg" alt="Birthday">
+<img src="assets/corporate.svg" alt="Corporate Gala">
+</div>
+</div>
+</div>
 <div class="hero-text">
 <h1>Celebrate With Ease</h1>
 <p>Book premium halls and services for weddings, birthdays, corporate events and more.</p>
 <button class="btn primary" data-nav="booking">Book Now</button>
 </div>
-<div class="hero-art"></div>
 </div>
 
 <h2 class="section-title">Limited-Time Offers</h2>
 <div class="cards">
 <div class="card">
-<img referrerpolicy="no-referrer" crossorigin="anonymous" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'><defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='%236c8cff'/><stop offset='1' stop-color='%2323d5ab'/></linearGradient></defs><rect width='800' height='450' fill='%23121824'/><rect x='0' y='0' width='800' height='450' fill='url(%23g)' opacity='0.22'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='42' fill='%23e6eef6' font-family='Inter, Arial'>Wedding Package</text></svg>" alt="Wedding Hall">
+<img src="assets/wedding.svg" alt="Wedding Hall">
 <div class="card-body">
 <h3>Wedding Package</h3>
 <p>20% off on weekend bookings.</p>
@@ -42,7 +53,7 @@
 </div>
 </div>
 <div class="card">
-<img referrerpolicy="no-referrer" crossorigin="anonymous" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'><rect width='800' height='450' fill='%23121824'/><circle cx='120' cy='100' r='18' fill='%236c8cff'/><circle cx='170' cy='160' r='14' fill='%2323d5ab'/><circle cx='80' cy='200' r='10' fill='%23ff6b6b'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='42' fill='%23e6eef6' font-family='Inter, Arial'>Birthday Bash</text></svg>" alt="Birthday Party">
+<img src="assets/birthday.svg" alt="Birthday Party">
 <div class="card-body">
 <h3>Birthday Bash</h3>
 <p>Free décor add-on for 100+ guests.</p>
@@ -50,7 +61,7 @@
 </div>
 </div>
 <div class="card">
-<img referrerpolicy="no-referrer" crossorigin="anonymous" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'><rect width='800' height='450' fill='%23121824'/><rect x='70' y='220' width='80' height='120' fill='%236c8cff'/><rect x='170' y='180' width='110' height='160' fill='%2323d5ab'/><rect x='300' y='140' width='130' height='200' fill='%239aa4b2'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='40' fill='%23e6eef6' font-family='Inter, Arial'>Corporate Gala</text></svg>" alt="Corporate Event">
+<img src="assets/corporate.svg" alt="Corporate Event">
 <div class="card-body">
 <h3>Corporate Gala</h3>
 <p>15% off for weekday events.</p>
@@ -140,6 +151,7 @@
 <h2 class="section-title">Admin</h2>
 <div class="admin-actions">
 <input type="text" id="search" placeholder="Search by name or date">
+<button id="logout" class="btn">Logout</button>
 </div>
 <div class="table-wrap">
 <table class="table" id="booking-table">
@@ -183,6 +195,22 @@
 <footer class="site-footer">
 <div>© <span id="year"></span> Eventio</div>
 </footer>
+
+<div id="admin-auth" class="modal hidden">
+<div class="modal-backdrop"></div>
+<div class="modal-content">
+<h3 id="auth-title">Admin Login</h3>
+<form id="auth-form" class="form narrow">
+<div class="form-row">
+<label>Password</label>
+<input type="password" id="auth-password" required>
+<div id="auth-help" class="message"></div>
+</div>
+<button class="btn primary" type="submit" id="auth-submit">Continue</button>
+<button class="btn" type="button" id="auth-cancel">Cancel</button>
+</form>
+</div>
+</div>
 
 <script src="script.js" defer></script>
 </body>
