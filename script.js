@@ -18,11 +18,45 @@ const authHelp=document.getElementById('auth-help');
 const authPassword=document.getElementById('auth-password');
 const authCancel=document.getElementById('auth-cancel');
 const logoutBtn=document.getElementById('logout');
+const sliderLinks=[...document.querySelectorAll('.slider-track [data-type]')];
+const heroArt=document.querySelector('.hero-art');
+const sliderTrack=document.querySelector('.slider-track');
+const prevBtn=document.querySelector('.slider-btn.prev');
+const nextBtn=document.querySelector('.slider-btn.next');
+let sliderStep=0;let loopLen=0;let offsetX=0;let speed=0.4;let rafId=null;
+
+const calcModal=document.getElementById('calc-modal');
+const calcModalBody=document.getElementById('calc-modal-body');
+const calcModalClose=document.getElementById('calc-modal-close');
+const calcForm=document.getElementById('price-calculator');
+const calcType=document.getElementById('calcType');
+const calcGuests=document.getElementById('calcGuests');
+const calcResult=document.getElementById('calc-result');
 
 function navigateTo(id){if(id==='admin'&&!isAuthed()){showAuth();return}sections.forEach(s=>s.classList.toggle('hidden',s.id!==id));navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+id));location.hash='#'+id}
 
 navLinks.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();navigateTo(a.getAttribute('href').slice(1))}));
 offerButtons.forEach(b=>b.addEventListener('click',()=>navigateTo('booking')));
+sliderLinks.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const type=a.getAttribute('data-type');document.getElementById('eventType').value=type;navigateTo('booking')}));
+function inr(n){try{return n.toLocaleString('en-IN',{style:'currency',currency:'INR'})}catch(e){return '₹'+String(n)}}
+function computeCost(){const type=(calcType?.value)||'Wedding';const g=Number(calcGuests?.value||0);let base=0;let perGuest=0;if(type==='Wedding'){base=50000;perGuest=520}else if(type==='Birthday'){base=25000;perGuest=520}else{base=60000;perGuest=0}const food=perGuest*g;const total=base+food;const lines=[`Base: ${inr(base)}`];if(perGuest>0)lines.push(`Food (${g} × ${inr(perGuest)}): ${inr(food)}`);lines.push(`Total: ${inr(total)}`);const text=lines.join('  |  ');calcResult.textContent=text;calcResult.className='message ok';showCalcModal(text)}
+function showCalcModal(text){calcModalBody.textContent=text;calcModal.classList.remove('hidden')}
+function hideCalcModal(){calcModal.classList.add('hidden')}
+calcModalClose&&calcModalClose.addEventListener('click',hideCalcModal)
+calcForm&&calcForm.addEventListener('submit',e=>{e.preventDefault();computeCost()});
+calcType&&calcType.addEventListener('change',computeCost);
+calcGuests&&calcGuests.addEventListener('input',computeCost);
+function calcStep(){const items=[...sliderTrack.children].filter(n=>n.tagName.toLowerCase()==='a');if(items.length<2)return 0;const r1=items[0].getBoundingClientRect();const r2=items[1].getBoundingClientRect();return Math.max(0,Math.round(Math.abs(r2.left-r1.left)))}
+function calcLoop(){const total=[...sliderTrack.children].filter(n=>n.tagName.toLowerCase()==='a').length;const unique=Math.max(1,Math.floor(total/2));return unique*sliderStep}
+function applyTransform(){sliderTrack.style.transform=`translateX(${-offsetX}px)`}
+function tick(){offsetX+=speed;if(loopLen>0&&offsetX>=loopLen)offsetX-=loopLen;applyTransform();rafId=requestAnimationFrame(tick)}
+function startAuto(){stopAuto();rafId=requestAnimationFrame(tick)}
+function stopAuto(){if(rafId){cancelAnimationFrame(rafId);rafId=null}}
+function nudge(dir){offsetX+=dir*sliderStep;if(offsetX<0)offsetX+=loopLen;if(offsetX>=loopLen)offsetX-=loopLen;applyTransform()}
+prevBtn&&prevBtn.addEventListener('click',()=>{stopAuto();nudge(-1);startAuto()});
+nextBtn&&nextBtn.addEventListener('click',()=>{stopAuto();nudge(1);startAuto()});
+heroArt&&heroArt.addEventListener('mouseenter',stopAuto);
+heroArt&&heroArt.addEventListener('mouseleave',startAuto);
 window.addEventListener('hashchange',()=>{const id=location.hash.replace('#','')||'home';navigateTo(id)});
 yearEl.textContent=new Date().getFullYear();
 
@@ -82,8 +116,11 @@ contactForm.addEventListener('submit',e=>{e.preventDefault();contactMsg.textCont
 function cryptoRandom(){const s=window.crypto&&crypto.getRandomValues?crypto.getRandomValues(new Uint32Array(1))[0].toString(16):String(Math.random()).slice(2);return Date.now().toString(36)+s}
 
 function init(){const hash=location.hash.replace('#','')||'home';initDateInput();renderCalendar();renderTable('');navigateTo(hash)}
+window.addEventListener('load',()=>{sliderStep=calcStep();loopLen=calcLoop();offsetX=0;applyTransform();startAuto()});
+window.addEventListener('resize',()=>{const prev=sliderStep;sliderStep=calcStep();loopLen=calcLoop();if(sliderStep!==prev)applyTransform()});
 
 document.addEventListener('DOMContentLoaded',init)
 authForm.addEventListener('submit',async e=>{e.preventDefault();authHelp.textContent='';authHelp.className='message';const pwd=authPassword.value.trim();if(!pwd){authHelp.textContent='Enter password';authHelp.className='message err';return}if(!hasAdminPassword()){const h=await sha256(pwd);localStorage.setItem('admin_hash',h);setSession(true);hideAuth();navigateTo('admin');return}const h=await sha256(pwd);if(h===localStorage.getItem('admin_hash')){setSession(true);hideAuth();navigateTo('admin')}else{authHelp.textContent='Incorrect password';authHelp.className='message err'}})
 authCancel.addEventListener('click',()=>{hideAuth();navigateTo('home')})
 logoutBtn.addEventListener('click',()=>{setSession(false);navigateTo('home')})
+ 
