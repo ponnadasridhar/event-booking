@@ -26,13 +26,15 @@
 <div class="hero-art">
 <div class="slider">
 <div class="slider-track">
-<img src="assets/wedding.svg" alt="Wedding">
-<img src="assets/birthday.svg" alt="Birthday">
-<img src="assets/corporate.svg" alt="Corporate Gala">
-<img src="assets/wedding.svg" alt="Wedding">
-<img src="assets/birthday.svg" alt="Birthday">
-<img src="assets/corporate.svg" alt="Corporate Gala">
+<a href="#booking" data-type="Wedding"><img src="assets/wedding.svg" alt="Wedding"></a>
+<a href="#booking" data-type="Birthday"><img src="assets/birthday.svg" alt="Birthday"></a>
+<a href="#booking" data-type="Corporate"><img src="assets/corporate.svg" alt="Corporate Gala"></a>
+<a href="#booking" data-type="Wedding"><img src="assets/wedding.svg" alt="Wedding"></a>
+<a href="#booking" data-type="Birthday"><img src="assets/birthday.svg" alt="Birthday"></a>
+<a href="#booking" data-type="Corporate"><img src="assets/corporate.svg" alt="Corporate Gala"></a>
 </div>
+<button class="slider-btn prev" aria-label="Previous">◀</button>
+<button class="slider-btn next" aria-label="Next">▶</button>
 </div>
 </div>
 <div class="hero-text">
@@ -101,6 +103,25 @@
 </div>
 </div>
 </div>
+
+<h2 class="section-title">Event Cost Calculator</h2>
+<form id="price-calculator" class="form narrow">
+<div class="form-row">
+<label>Event Type</label>
+<select id="calcType" required>
+<option value="Wedding">Wedding</option>
+<option value="Birthday">Birthday</option>
+<option value="Corporate">Corporate</option>
+<option value="Other">Other</option>
+</select>
+</div>
+<div class="form-row">
+<label>Number of Guests</label>
+<input type="number" id="calcGuests" min="0" placeholder="Enter guests">
+</div>
+<button class="btn primary" type="submit">Calculate</button>
+<div id="calc-result" class="message"></div>
+</form>
 </section>
 
 <section id="booking" class="section hidden">
@@ -195,6 +216,15 @@
 <footer class="site-footer">
 <div>© <span id="year"></span> Eventio</div>
 </footer>
+
+<div id="calc-modal" class="modal hidden">
+<div class="modal-backdrop"></div>
+<div class="modal-content">
+<h3>Estimated Cost</h3>
+<div id="calc-modal-body" class="message"></div>
+<button class="btn primary" id="calc-modal-close">OK</button>
+</div>
+</div>
 
 <div id="admin-auth" class="modal hidden">
 <div class="modal-backdrop"></div>
